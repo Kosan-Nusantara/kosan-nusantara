@@ -18,8 +18,8 @@
                                 <th>No</th>
                                 {{-- <th>Id</th> --}}
                                 <th>Name</th>
-                                <th>Room Name</th>
-                                <th>Status</th>
+                                <th>User Type</th>
+                                {{-- <th>Status</th> --}}
                             </tr>
                         </thead>
                         </tbody>
@@ -36,7 +36,7 @@
             // Inisialisasi DataTable dengan sumber data kosong
             var customTable = $('#transaction').DataTable({
                 ajax: {
-                    url: '{{ route('admin.transaction.datatable') }}', // Gantilah dengan URL endpoint API Anda
+                    url: '{{ route('admin.users.datatable') }}', // Gantilah dengan URL endpoint API Anda
                     type: 'GET',
                     dataType: 'json',
                     dataSrc: 'data'
@@ -45,13 +45,10 @@
                         data: 'id'
                     },
                     {
-                        data: 'user_id'
+                        data: 'name'
                     },
                     {
-                        data: 'boarding_id'
-                    },
-                    {
-                        data: 'status'
+                        data: 'type'
                     },
                 ],
                 columnDefs: [{
@@ -64,39 +61,13 @@
                     {
                         targets: 1,
                         render: function(data, type, row, meta) {
-                            var data = row.user.name
                             return `<div><span class="text-gray-800 fw-bolder">${data}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
                         render: function(data, type, row, meta) {
-                            var data = row.boarding.name
                             return `<div><span class="text-gray-800">${data}</span></div>`;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        render: function(data, type, row, meta) {
-                            var value = '';
-                            var _class = '';
-
-                            if (row.status == 'success') {
-                                var value = 'Success';
-                                var _class = 'success';
-                            } else if (row.status == 'unpaid') {
-                                var value = 'Unpaid';
-                                var _class = 'danger';
-                            } else if (row.status == 'expire') {
-                                var value = 'Expire';
-                                var _class = 'danger';
-                            } else if (row.status == 'failure') {
-                                var value = 'Failure';
-                                var _class = 'danger';
-                            }
-
-                            return `<div><span class="badge rounded-pill bg-${_class}">${value}</span>`;
-
                         }
                     },
                 ]

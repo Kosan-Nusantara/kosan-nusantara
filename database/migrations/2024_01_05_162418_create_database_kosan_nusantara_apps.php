@@ -30,6 +30,14 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->timestamps();
         });
+        
+        Schema::create('facility', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('photo')->nullable();
+            $table->timestamps();
+        });
 
         Schema::create('gallery', function (Blueprint $table) {
             $table->uuid('id')->primary();

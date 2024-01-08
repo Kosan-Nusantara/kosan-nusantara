@@ -51,55 +51,66 @@
 
 
                 </li>
+                @auth
+                    @if (auth()->user()->type == 'admin')
+                        <li class="sidebar-title">Apps</li>
 
-                <li class="sidebar-title">Apps</li>
-
-                <li class="sidebar-item">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-stack"></i>
-                        <span>Kosan</span>
-                    </a>
-                </li>
-
+                        <li class="sidebar-item {{ request()->routeIs('admin.boarding.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.boarding.index') }}" class='sidebar-link'>
+                                <i class="bi bi-house-door-fill"></i>
+                                <span>Kosan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ request()->routeIs('admin.facility.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.facility.index') }}" class='sidebar-link'>
+                                <i class="bi bi-house-gear-fill"></i>
+                                <span>Fasilitas</span>
+                            </a>
+                        </li>
+                    @endif
+                @endauth
                 <li class="sidebar-title">Report</li>
 
-                <li class="sidebar-item">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-stack"></i>
+                <li class="sidebar-item {{ request()->routeIs('admin.transaction') ? 'active' : '' }} ">
+                    <a href="{{ route('admin.transaction') }}" class='sidebar-link'>
+                        <i class="bi bi-credit-card-fill"></i>
                         <span>Transaction</span>
                     </a>
                 </li>
 
-                <li class="sidebar-title">User Manajement</li>
+                @auth
+                    @if (auth()->user()->type == 'admin')
+                        <li class="sidebar-title">User Manajement</li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-stack"></i>
-                        <span>User Manajement</span>
-                    </a>
+                        <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }} has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>User Manajement</span>
+                            </a>
 
-                    <ul class="submenu ">
+                            <ul class="submenu ">
 
-                        <li class="submenu-item  ">
-                            <a href="component-accordion.html" class="submenu-link">Permission</a>
+                                {{-- <li class="submenu-item  ">
+                                    <a href="component-accordion.html" class="submenu-link">Permission</a>
+
+                                </li>
+
+                                <li class="submenu-item  ">
+                                    <a href="component-alert.html" class="submenu-link">Role</a>
+
+                                </li> --}}
+
+                                <li class="submenu-item {{ request()->routeIs('admin.users.index') ? 'active' : '' }} ">
+                                    <a href="{{ route('admin.users.index') }}" class="submenu-link">User</a>
+
+                                </li>
+
+                            </ul>
+
 
                         </li>
-
-                        <li class="submenu-item  ">
-                            <a href="component-alert.html" class="submenu-link">Role</a>
-
-                        </li>
-
-                        <li class="submenu-item  ">
-                            <a href="component-badge.html" class="submenu-link">User</a>
-
-                        </li>
-
-                    </ul>
-
-
-                </li>
-
+                    @endif
+                @endauth
             </ul>
         </div>
     </div>

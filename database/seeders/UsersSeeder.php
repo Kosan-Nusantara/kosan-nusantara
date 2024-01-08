@@ -28,6 +28,7 @@ class UsersSeeder extends Seeder
             'name' => 'admin',
             'username' => 'superadmin',
             'email' => 'admin@kosanusantara.com',
+            'type' => 'admin',
             'password' => Hash::make('superadmin123'),
             'email_verified_at' => Carbon::now(),
         ]);

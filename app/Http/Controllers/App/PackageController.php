@@ -13,13 +13,13 @@ class PackageController extends Controller
         $boardings = Boarding::with(['facility'])
             ->orderBy('price', 'asc')
             ->get();
-        return view('app.front.package', compact(['boardings']));
+        return view('app.front.package.index', compact(['boardings']));
     }
     public function detail($id)
     {
         $boarding = Boarding::with(['facility'])
             ->where('id', $id)
             ->first();
-        return view('app.front.package-detail', compact(['boarding']));
+        return view('app.front.package.detail', compact(['boarding']));
     }
 }

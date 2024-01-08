@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.8",
         "midtrans/midtrans-php": "^2.5",
         "spatie/laravel-permission": "^6.3",
+        "yajra/laravel-datatables": "10.0",
         "yajra/laravel-datatables-oracle": "*"
     },
     "require-dev": {

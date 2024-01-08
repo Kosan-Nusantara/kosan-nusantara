@@ -16,7 +16,7 @@ class TransactionController extends Controller
     {
         $room = Boarding::find($id);
         $user = Auth::user();
-        return view('app.front.booking', compact(['room', 'user']));
+        return view('app.front.transaction.booking', compact(['room', 'user']));
     }
 
     public function payment(Request $request)
@@ -106,6 +106,6 @@ class TransactionController extends Controller
         $room = Boarding::where('id', $tran->boarding_id)->first();
 
 
-        return view("app.front.finish", compact('result', 'order_id'));
+        return view("app.front.transaction.finish", compact('result', 'order_id'));
     }
 }
