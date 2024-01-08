@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UsersSeeder::class,
             BoardingSeeders::class,
+            FacilitySeeders::class,
         ]);
     }
 }
