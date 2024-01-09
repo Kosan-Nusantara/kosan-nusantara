@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Boarding;
+use App\Models\BoardingFacility;
 use App\Models\Facility;
 use Illuminate\Http\Request;
 
@@ -29,13 +30,16 @@ class BoardingController extends Controller
     {
         $request->all();
         $request->validate([
-            'name' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'facilities' => 'nullable|array',
+            // 'facilities.*' => 'exists:facilities,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // dd($request);
-        if($request->hasFile('image'))
-        {
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->hashName();
             $imagePath = $request->file('image')->storeAs('images/boarding', $imageName);
@@ -44,24 +48,48 @@ class BoardingController extends Controller
         }
 
         // Simpan path gambar ke database
-        Boarding::create([
+        $boarding = Boarding::create([
             'name' => $request->name,
             'description' => $request->name,
             'photo' => $imageName,
         ]);
+
+        // dd($request, $boarding);
+
+        if ($request->has('facilities')) {
+            foreach ($request->input('facilities') as $facilityId) {
+                // $boarding->facilities()->attach($facilityId);
+                BoardingFacility::create([
+                    'boarding_id' => $boarding->id,
+                    'facility_id' => $facilityId,
+                ]);
+            }
+        }
+
 
         return redirect()->route('admin.boarding.index')->with('success', 'Berhasil Menambahkan Fasilitas');
     }
 
     public function edit($id)
     {
-        $data = Boarding::where('id', $id)->first();
-        return view('app.admin.boarding.edit', compact(['data']));
+        $boarding = Boarding::findOrFail($id);
+        $facilities = Facility::all();
+        $boardingFacilities = $boarding->facilities->pluck('id')->toArray();
+
+        return view('app.admin.boarding.edit', compact('boarding', 'facilities', 'boardingFacilities'));
     }
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $data = Boarding::find($id);
-        $data->delete();
-        return redirect()->route('admin.boarding.index')->with('success', 'Berhasil Menghapus Fasilitas');
+        $boardingId = $request->input('id');
+
+        try {
+            $boarding = Boarding::findOrFail($boardingId);
+            $boarding->delete();
+            BoardingFacility::where('boarding_id', $boardingId)->delete();
+
+            return response()->json(['success' => true, 'message' => 'Fasilitas berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus fasilitas.']);
+        }
     }
 }

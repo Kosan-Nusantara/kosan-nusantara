@@ -26,4 +26,16 @@ class Boarding extends Model
     {
         return $this->hasMany(BoardingFacility::class, 'boarding_id', 'id');
     }
+
+    public function facilities()
+    {
+        return $this->hasManyThrough(
+            Facility::class,
+            BoardingFacility::class,
+            'boarding_id',
+            'id',
+            'id',
+            'facility_id'
+        );
+    }
 }

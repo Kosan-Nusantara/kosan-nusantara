@@ -33,8 +33,33 @@ class FacilityController extends Controller
         ]);
 
         // dd($request);
-        if($request->hasFile('image'))
-        {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->hashName();
+            $imagePath = $request->file('image')->storeAs('images/facility', $imageName);
+        } else {
+            $imageName = null;
+        }
+
+        // Simpan path gambar ke database
+        Facility::create([
+            'name' => $request->name,
+            'description' => $request->name,
+            'photo' => $imageName,
+        ]);
+
+        return redirect()->route('admin.facility.index')->with('success', 'Berhasil Menambahkan Fasilitas');
+    }
+    public function update(Request $request)
+    {
+        $request->all();
+        $request->validate([
+            'name' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // dd($request);
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->hashName();
             $imagePath = $request->file('image')->storeAs('images/facility', $imageName);
@@ -57,10 +82,18 @@ class FacilityController extends Controller
         $data = Facility::where('id', $id)->first();
         return view('app.admin.facility.edit', compact(['data']));
     }
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $data = Facility::find($id);
-        $data->delete();
-        return redirect()->route('admin.facility.index')->with('success', 'Berhasil Menghapus Fasilitas');
+        $facilityId = $request->input('id');
+
+        try {
+            $facility = Facility::findOrFail($facilityId);
+
+            $facility->delete();
+
+            return response()->json(['success' => true, 'message' => 'Fasilitas berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus fasilitas.']);
+        }
     }
 }

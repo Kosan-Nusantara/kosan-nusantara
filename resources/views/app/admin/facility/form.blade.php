@@ -1,5 +1,12 @@
 @extends('app.layout.admin')
 @push('styles')
+    <style>
+        .imagePreview {
+            border-radius: 25px;
+            max-width: 300px;
+            max-height: 300px
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -35,10 +42,22 @@
                                                 <label for="description">Description</label>
                                             </div>
                                         </div>
-                                        <div class="col-12 mt-3">
+                                        <div class="col-12 mt-3 justify-content-center">
                                             <div class="form-group">
-                                                <label for="image" class="form-label">Photo</label>
-                                                <input class="form-control" type="file" id="image" name="image">
+                                                {{-- <label for="image" class="form-label">Photo</label> --}}
+                                                <div class="d-flex justify-content-center align-items-center flex-column">
+                                                    <input class="form-control" type="file" id="image" name="image"
+                                                        onchange="previewImage()" value="{{ old('image') }}" hidden>
+                                                    <button type="button" class="btn btn-primary mt-2"
+                                                        onclick="document.getElementById('image').click()">Choose
+                                                        Image</button>
+                                                </div>
+                                                <div
+                                                    class="mt-2 d-flex justify-content-center align-items-center flex-column">
+                                                    <img id="imagePreview"
+                                                        src="{{ asset('/uploads/images/thumbnail.jpg') }}" alt="Preview"
+                                                        style="max-width: 300px; max-height: 300px; border-radius: 10px;">
+                                                </div>
                                                 @error('image')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -61,8 +80,24 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        function previewImage() {
+            var input = document.getElementById('image');
+            var preview = document.getElementById('imagePreview');
 
-        });
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "{{ asset('/uploads/images/thumbnail.jpg') }}";
+                preview.style.display = 'block';
+            }
+        }
     </script>
 @endpush

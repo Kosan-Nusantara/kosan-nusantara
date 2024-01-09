@@ -48,20 +48,21 @@ Route::name('admin.')->prefix('/admin')->group(function () {
     Route::get('/transaction/datatable', [AdminTransactionController::class, 'datatable'])->name('transaction.datatable');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/datatable', [UserController::class, 'datatable'])->name('users.datatable');
-    
+
     Route::get('/facility', [AdminFacilityController::class, 'index'])->name('facility.index');
     Route::get('/facility/datatable', [AdminFacilityController::class, 'datatable'])->name('facility.datatable');
     Route::get('/facility/create', [AdminFacilityController::class, 'create'])->name('facility.create');
     Route::get('/facility/{id}/edit', [AdminFacilityController::class, 'edit'])->name('facility.edit');
     Route::post('/facility/destroy', [AdminFacilityController::class, 'destroy'])->name('facility.destroy');
     Route::post('/facility/store', [AdminFacilityController::class, 'store'])->name('facility.store');
-    
+
     Route::get('/boarding', [BoardingController::class, 'index'])->name('boarding.index');
     Route::get('/boarding/datatable', [BoardingController::class, 'datatable'])->name('boarding.datatable');
     Route::get('/boarding/create', [BoardingController::class, 'create'])->name('boarding.create');
     Route::get('/boarding/{id}/edit', [BoardingController::class, 'edit'])->name('boarding.edit');
-    Route::post('/boarding/destroy', [BoardingController::class, 'destroy'])->name('boarding.destroy');
     Route::post('/boarding/store', [BoardingController::class, 'store'])->name('boarding.store');
+    Route::get('/boarding/{id}/update', [BoardingController::class, 'edit'])->name('boarding.update');
+    Route::post('/boarding/destroy', [BoardingController::class, 'destroy'])->name('boarding.destroy');
 });
 
 Route::middleware('auth')->group(function () {

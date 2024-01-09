@@ -46,19 +46,33 @@
                                             </div>
                                         </div>
                                         <div class="col-12 mt-3">
+                                            <div id="facilityDropdowns"></div>
+                                            <div class="d-flex justify-content-end">
+                                                <button type="button" class="btn btn-primary mt-2"
+                                                    id="addFacilityBtn">Tambah
+                                                    Fasilitas</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-3 justify-content-center">
                                             <div class="form-group">
-                                                <label for="image" class="form-label">Photo</label>
-                                                <input class="form-control" type="file" id="image" name="image">
+                                                {{-- <label for="image" class="form-label">Photo</label> --}}
+                                                <div class="d-flex justify-content-center align-items-center flex-column">
+                                                    <input class="form-control" type="file" id="image" name="image"
+                                                        onchange="previewImage()" value="{{ old('image') }}" hidden>
+                                                    <button type="button" class="btn btn-primary mt-2"
+                                                        onclick="document.getElementById('image').click()">Choose
+                                                        Image</button>
+                                                </div>
+                                                <div
+                                                    class="mt-2 d-flex justify-content-center align-items-center flex-column">
+                                                    <img id="imagePreview"
+                                                        src="{{ asset('/uploads/images/thumbnail.jpg') }}" alt="Preview"
+                                                        style="max-width: 300px; max-height: 300px; border-radius: 10px;">
+                                                </div>
                                                 @error('image')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-                                        <!-- Dropdown list fasilitas -->
-                                        <div class="col-12 mt-3">
-                                            <button type="button" class="btn btn-primary" id="addFacilityBtn">Tambah
-                                                Fasilitas</button>
-                                            <div id="facilityDropdowns"></div>
                                         </div>
                                         <div class="col-12 d-flex justify-content-end mt-5">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
@@ -78,17 +92,11 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Counter untuk memberikan ID unik pada setiap dropdown fasilitas
             var facilityCounter = 1;
-            // Batasan maksimal fasilitas
             var maxFacilities = 6;
-
-            // Data fasilitas dari controller
             var facilitiesData = {!! json_encode($facilities) !!};
 
-            // Event handler untuk tombol "Tambah Fasilitas"
             $('#addFacilityBtn').on('click', function() {
-                // Cek apakah jumlah fasilitas sudah mencapai batas maksimal
                 if (facilityCounter <= maxFacilities) {
                     var newFacilityDropdown = `
                     <div class="mt-3">
@@ -96,7 +104,6 @@
                         <select class="form-select" id="facility_${facilityCounter}" name="facilities[]">
                             <option value="">Pilih Fasilitas</option>`;
 
-                    // Tambahkan opsi fasilitas sesuai data dari array facilitiesData
                     facilitiesData.forEach(function(facility) {
                         newFacilityDropdown +=
                             `<option value="${facility.id}">${facility.name}</option>`;
@@ -105,13 +112,32 @@
                     newFacilityDropdown += `</select></div>`;
                     $('#facilityDropdowns').append(newFacilityDropdown);
 
-                    // Increment counter
                     facilityCounter++;
                 } else {
-                    // Tampilkan pesan jika sudah mencapai batas maksimal
-                    alert('Maksimal 6 fasilitas.');
+                    Swal.fire('Peringatan', 'Maksimal 6 fasilitas.', 'warning');
                 }
             });
+
         });
+
+        function previewImage() {
+            var input = document.getElementById('image');
+            var preview = document.getElementById('imagePreview');
+
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "{{ asset('/uploads/images/thumbnail.jpg') }}";
+                preview.style.display = 'block';
+            }
+        }
     </script>
 @endpush

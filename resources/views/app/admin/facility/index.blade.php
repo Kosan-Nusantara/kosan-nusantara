@@ -18,7 +18,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive datatable-minimal">
-                    <table class="table" id="transaction">
+                    <table class="table" id="facility">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -40,7 +40,7 @@
     <script>
         $(document).ready(function() {
             // Inisialisasi DataTable dengan sumber data kosong
-            var customTable = $('#transaction').DataTable({
+            var customTable = $('#facility').DataTable({
                 ajax: {
                     url: '{{ route('admin.facility.datatable') }}', // Gantilah dengan URL endpoint API Anda
                     type: 'GET',
@@ -90,50 +90,52 @@
                     },
                 ]
             });
-            $('#transaction').on('click', '.btn-delete', function(e) {
+            $('#facility').on('click', '.btn-delete', function(e) {
                 e.preventDefault();
                 var facilityId = $(this).data('id');
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-                if (confirm('Apakah Anda yakin ingin menghapus fasilitas ini?')) {
-                    // Gunakan SweetAlert untuk konfirmasi penghapusan
-                    Swal.fire({
-                        title: 'Apakah Anda yakin?',
-                        text: "Anda tidak dapat mengembalikan data yang telah dihapus!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Kirim permintaan penghapusan ke server
-                            $.ajax({
-                                url: '{{ route('admin.facility.destroy') }}',
-                                type: 'DELETE',
-                                data: {
-                                    id: facilityId
-                                },
-                                success: function(response) {
-                                    customTable.ajax.reload();
-                                    Swal.fire(
-                                        'Berhasil!',
-                                        'Fasilitas telah dihapus.',
-                                        'success'
-                                    );
-                                },
-                                error: function(error) {
-                                    Swal.fire(
-                                        'Gagal!',
-                                        'Terjadi kesalahan saat menghapus fasilitas.',
-                                        'error'
-                                    );
-                                }
-                            });
-                        }
-                    });
-                }
+                // Gunakan SweetAlert untuk konfirmasi penghapusan tanpa konfirmasi browser
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Anda tidak dapat mengembalikan data yang telah dihapus!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim permintaan penghapusan ke server
+                        $.ajax({
+                            url: '{{ route('admin.facility.destroy') }}',
+                            type: 'post',
+                            data: {
+                                id: facilityId,
+                                _token: csrfToken
+
+                            },
+                            success: function(response) {
+                                customTable.ajax.reload();
+                                Swal.fire(
+                                    'Berhasil!',
+                                    'Fasilitas telah dihapus.',
+                                    'success'
+                                );
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus fasilitas.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
             });
+
         });
     </script>
 @endpush

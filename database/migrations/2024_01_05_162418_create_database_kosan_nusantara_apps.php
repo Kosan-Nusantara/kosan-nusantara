@@ -25,12 +25,13 @@ return new class extends Migration
         Schema::create('boarding_facility', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('boarding_id');
-            $table->string('name');
+            $table->uuid('facility_id')->nullable();
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
         });
-        
+
         Schema::create('facility', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
@@ -38,6 +39,13 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->timestamps();
         });
+
+        // Schema::create('boarding_facility', function (Blueprint $table) {
+        //     $table->uuid('id')->primary();
+        //     $table->uuid('facility_id');
+        //     $table->uuid('boarding_id');
+        //     $table->timestamps();
+        // });
 
         Schema::create('gallery', function (Blueprint $table) {
             $table->uuid('id')->primary();

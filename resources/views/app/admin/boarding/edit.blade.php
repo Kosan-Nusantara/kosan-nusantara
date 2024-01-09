@@ -8,44 +8,67 @@
             <div class="col-md-12 col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Vertical Form</h4>
+                        <h4 class="card-title">Edit Data Kosan Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form class="form form-vertical" action="{{ route('admin.facility.store') }}" method="post"
+                            <form action="{{ route('admin.boarding.update', $boarding->id) }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-floating">
-                                                <input type="text" id="name" class="form-control" name="name"
-                                                    placeholder="Name" value="{{ old('name', $data->name) }}">
-                                                <label for="name">Name</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mt-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="description" class="form-control"
-                                                    name="description" placeholder="Description"
-                                                    value="{{ old('description', $data->description) }}">
-                                                <label for="description">Description</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mt-3">
-                                            <div class="form-group">
-                                                <label for="image" class="form-label">Photo</label>
-                                                <input class="form-control" type="file" id="image" name="image"
-                                                    value="{{ old('image', $data->photo) }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                        </div>
-                                    </div>
+                                @method('PUT')
+
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        value="{{ old('name', $boarding->name) }}">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description">{{ old('description', $boarding->description) }}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input type="text" class="form-control" id="price" name="price"
+                                        value="{{ old('price', $boarding->price) }}">
+                                    @error('price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="facilities">Facilities</label>
+                                    <select class="form-select" id="facilities" name="facilities[]" multiple>
+                                        @foreach ($facilities as $facility)
+                                            <option value="{{ $facility->id }}"
+                                                {{ in_array($facility->id, $boardingFacilities) ? 'selected' : '' }}>
+                                                {{ $facility->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="image">Image</label>
+                                    <input type="file" class="form-control" id="image" name="image"
+                                        onchange="previewImage()">
+                                    <img id="imagePreview"
+                                        src="{{ $boarding->image ? asset('storage/' . $boarding->image) : asset('/uploads/images/thumbnail.jpg') }}"
+                                        alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 10px;">
+                                    @error('image')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
